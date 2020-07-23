@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Users</title>
+<link th:replace="fragments/head">
+</head>
+<body>
+	<div class="container-fluid">
+		<div th:replace="fragments/navbar"></div>
+		<h2>Users</h2>
+		<div class="list-group" th:each="user:${users}">
+			<div class="list-group-item list-group-item-action">
+				<div class="d-flex w-100 justify-content-between">
+					<a class="username" th:href="@{/users/} + ${user.username}">
+						<h5 style="color: #1da1f2;">
+							<i class="fab fa-twitter"></i> @<span th:text="${user.username}"></span>
+						</h5> <span class="text-left" style="color: #1da1f2;"> <span
+							th:text="${user.firstName}"></span> <span
+							th:text="${user.lastName}"></span>
+					</span>
+					</a>
+					<div class="text-right">
+						<small> <span th:text="${tweetCounts.get(user.username)}"></span>
+							tweet(s)
+						</small>
+						<form th:action="@{/follow/} + ${user.username}"
+							th:if="${followingStatus.containsKey(user.username) &&
+                !followingStatus.get(user.username)}"
+							method="post">
+							<button style="float: right" type="Submit"
+								class="btn btn-success">Follow</button>
+						</form>
+						<form th:action="@{/unfollow/} + ${user.username}"
+							th:if="${followingStatus.containsKey(user.username) &&
+                followingStatus.get(user.username)}"
+							method="post">
+							<button style="float: right" type="Submit"
+								class="btn btn-primary unfollow_btn">Following</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script th:replace="fragments/scripts"></script>
+</body>
+</html>

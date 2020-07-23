@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>User Page</title>
+<link th:replace="fragments/head">
+</head>
+<body>
+	<div class="container-fluid">
+		<div th:replace="fragments/navbar"></div>
+		<br />
+		<form th:if="${!following && !isSelfPage}"
+			th:action="@{/follow/} + ${user.username}" method="post">
+			<button style="float: right;" type="Submit"
+				class="btn btn-lg btn-primary">Follow</button>
+		</form>
+		<form th:if="${following && !isSelfPage}"
+			th:action="@{/unfollow/} + ${user.username}" method="post">
+			<button style="float: right;" type="Submit"
+				class="btn btn-lg btn-primary unfollow_btn">Following</button>
+		</form>
+		<h2>
+			Profile for <span th:text="${user.firstName}"></span> <span
+				th:text="${user.lastName}"></span> - <span style="color: #1da1f2;">
+				@<span th:text="${user.username}"></span>
+			</span>
+		</h2>
+		<small> Joined: <span
+			th:text="${#dates.format(user.createdAt, 'MMMM dd, yyyy')}"></span>
+		</small> <small class="float-right"><span
+			th:text="${tweetList.size()}"></span> tweet(s)</small>
+		<div class="list-group" th:each="tweet:${tweetList}">
+			<div class="list-group-item list-group-item-action">
+				<div class="d-flex w-100 justify-content-between">
+					<h5>
+						<span style="color: #1da1f2;" class="username"
+							th:href="@{/users/} + ${tweet.user.username}"> <i
+							class="fab fa-twitter"></i> @<span
+							th:text="${tweet.user.username}"></span>
+						</span>
+					</h5>
+					<small>Tweeted: <span
+						th:text="${#dates.format(tweet.createdAt, 'M/d/yyyy')}"></span></small>
+				</div>
+				<p class="mb-1" th:utext="${tweet.message}"></p>
+			</div>
+		</div>
+		<div th:if="${#lists.isEmpty(tweetList)}">
+			<h3>No tweets have been created yet</h3>
+		</div>
+	</div>
+	<script th:replace="fragments/scripts"></script>
+</body>
+</html>
